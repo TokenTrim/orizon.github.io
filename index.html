@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Orizon — clean room for agent traces</title>
-<meta name="description" content="Teams building agents on sensitive data can't read their own production traces. Orizon is a clean room: real logs go in, a synthetic, structurally-identical dataset comes out — safe to read, replay, and eval, without exposing real data.">
+<title>Orizon: clean room for agent traces</title>
+<meta name="description" content="Teams building agents on sensitive data can't read their own production traces. Orizon is a clean room: a component in your stack that turns real traffic into a synthetic, production-like eval set, without exposing real data.">
 <meta name="color-scheme" content="light">
-<meta property="og:title" content="Orizon — clean room for agent traces">
+<meta property="og:title" content="Orizon: clean room for agent traces">
 <meta property="og:description" content="Evaluate your agent on production traffic without reading production traffic.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2310756e'/%3E%3Ctext x='50' y='70' font-family='monospace' font-size='60' font-weight='700' fill='%23fff' text-anchor='middle'%3EO%3C/text%3E%3C/svg%3E">
@@ -25,10 +25,7 @@
     --green-dark: #0d6b64;
     --paper: #f5f3ec;
     --card: #fffdf8;
-    --panel: #fbf9f2;
     --sensitive: #b4462f;
-    --sensitive-bg: #f6e4dc;
-    --synth-bg: #dff0ee;
     --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
   }
@@ -45,12 +42,9 @@
   }
   a { color: var(--green); }
 
-  /* ---- top bar ---- */
   .bar {
-    max-width: 880px; margin: 0 auto;
-    padding: 20px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px;
+    max-width: 880px; margin: 0 auto; padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
   }
   .brand {
     font-family: var(--mono); font-weight: 700; font-size: 19px;
@@ -59,79 +53,59 @@
   }
   .brand .mark {
     width: 22px; height: 22px; background: var(--green); color: #fff;
-    font-size: 14px; font-weight: 700; line-height: 22px; text-align: center;
-    display: inline-block;
+    font-size: 14px; font-weight: 700; line-height: 22px; text-align: center; display: inline-block;
   }
 
-  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 24px 96px; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 28px 24px 96px; }
 
-  /* ---- buttons (plain, sharp-edged) ---- */
+  /* buttons: plain, sharp-edged */
   .btn {
     display: inline-block; background: var(--green); color: #fff;
-    font-family: var(--mono); font-weight: 500; font-size: 15px;
-    letter-spacing: .01em; text-decoration: none;
-    padding: 12px 22px; border: 1px solid var(--green);
+    font-family: var(--mono); font-weight: 500; font-size: 15px; letter-spacing: .01em;
+    text-decoration: none; padding: 12px 22px; border: 1px solid var(--green);
     transition: background .15s ease, border-color .15s ease;
   }
   .btn:hover { background: var(--green-dark); border-color: var(--green-dark); }
   .btn.sm { padding: 9px 16px; font-size: 14px; }
-  .btn.ghost {
-    background: transparent; color: var(--ink); border-color: var(--line-strong);
-  }
-  .btn.ghost:hover { background: transparent; border-color: var(--ink); }
+  a:focus-visible, .btn:focus-visible, .profile:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
-  /* ---- hero ---- */
-  .eyebrow {
-    font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--green); font-weight: 500; margin: 0 0 20px;
-  }
   h1 {
     font-family: var(--mono); font-weight: 400;
-    font-size: clamp(30px, 6.4vw, 44px); line-height: 1.12; letter-spacing: -.02em;
-    margin: 0 0 22px; text-wrap: balance;
+    font-size: clamp(30px, 6.2vw, 43px); line-height: 1.14; letter-spacing: -.02em;
+    margin: 8px 0 22px; text-wrap: balance;
   }
-  .lead { font-size: clamp(18px, 2.4vw, 20px); line-height: 1.55; color: #3a342a; margin: 0 0 18px; }
-  .lead strong { color: var(--ink); font-weight: 700; }
-  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 30px 0 0; }
+  .lead { font-size: clamp(18px, 2.4vw, 20px); line-height: 1.55; color: #3a342a; margin: 0; max-width: 60ch; }
+  .lead .em { color: var(--ink); font-weight: 600; }
+  .hero-cta { margin: 30px 0 0; }
 
   .backers {
-    font-family: var(--mono); font-size: 12.5px; line-height: 1.7;
-    letter-spacing: .01em; color: var(--faint);
-    margin: 34px 0 0; padding-top: 22px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.7; letter-spacing: .01em;
+    color: var(--muted); margin: 34px 0 0; padding-top: 22px; border-top: 1px solid var(--line);
   }
-  .backers b { color: var(--muted); font-weight: 500; }
 
-  /* ---- section headings ---- */
   h2 {
-    font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 20px;
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500; margin: 0 0 18px;
   }
-  section { margin-top: 76px; }
+  section { margin-top: 72px; }
   p { margin: 0 0 18px; }
   p:last-child { margin-bottom: 0; }
   .prose { font-size: 17px; color: #423c30; }
   .prose .em { color: var(--ink); font-weight: 600; }
 
-  /* ---- trace animation ---- */
+  /* trace animation */
   .flow-label {
-    font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--muted); font-weight: 500;
-    margin: 0 0 6px;
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500; margin: 0 0 6px;
   }
   .flow-sub { color: var(--muted); font-size: 15px; margin: 0 0 22px; }
-
-  .flow {
-    display: grid; grid-template-columns: 1fr; gap: 14px; align-items: stretch;
-  }
-  .panel {
-    background: var(--panel); border: 1px solid var(--line-strong);
-    display: flex; flex-direction: column; min-width: 0;
-  }
+  .flow { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: stretch; }
+  .panel { border: 1px solid var(--line-strong); display: flex; flex-direction: column; min-width: 0; }
+  .panel.in { background: #fbf7f4; }
+  .panel.out { background: #f6faf7; }
   .panel-head {
-    display: flex; align-items: center; gap: 8px;
-    padding: 11px 14px; border-bottom: 1px solid var(--line);
-    font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em;
-    text-transform: uppercase; font-weight: 500;
+    display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-bottom: 1px solid var(--line);
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 500;
   }
   .panel-head .dot { width: 8px; height: 8px; flex: none; }
   .panel.in .panel-head { color: var(--sensitive); }
@@ -141,61 +115,41 @@
   .panel-head .tag { margin-left: auto; color: var(--faint); letter-spacing: .04em; text-transform: none; font-size: 11px; }
 
   .trace {
-    font-family: var(--mono); font-size: 12.5px; line-height: 1.85;
-    padding: 14px; margin: 0; overflow-x: auto; color: #3a352b; flex: 1;
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.85; padding: 14px; margin: 0;
+    overflow-x: auto; color: #3a352b; flex: 1;
   }
   .trace .row { white-space: pre; }
   .trace .role { color: var(--faint); }
-  .trace .arm { color: var(--faint); }
-
-  /* sensitive tokens (left) */
-  .s { background: var(--sensitive-bg); color: var(--sensitive); padding: 0 2px; transition: box-shadow .2s ease; }
-  .s.active { box-shadow: inset 0 -2px 0 var(--sensitive); }
-  /* synthetic tokens (right): value under a mask that lifts on reveal */
-  .m { position: relative; display: inline-block; }
-  .m .v { background: var(--synth-bg); color: var(--green-dark); padding: 0 2px; }
-  .m .mask {
-    position: absolute; inset: 0; background: #e7e2d5; color: #b3ad9c;
-    overflow: hidden; white-space: nowrap; transition: opacity .18s ease;
-  }
-  .m.shown .mask { opacity: 0; }
+  /* right panel streams in line by line: a fresh trace being generated, not fields swapped */
+  .trace.gen .row { opacity: 0; transform: translateY(3px); transition: opacity .3s ease, transform .3s ease; }
+  .trace.gen .row.on { opacity: 1; transform: none; }
 
   .flow-arrow {
-    justify-self: center; color: var(--faint); font-family: var(--mono);
-    font-size: 15px; display: flex; align-items: center; gap: 8px; padding: 2px 0;
-    flex-direction: column;
+    justify-self: center; align-self: center; color: var(--faint);
+    font-family: var(--mono); font-size: 18px; line-height: 1; padding: 2px 0;
   }
-  .flow-arrow .ln { width: 1px; height: 18px; background: var(--line-strong); display: inline-block; }
   .flow-arrow .gh { display: none; }
   .flow-note { text-align: center; font-size: 13px; color: var(--faint); margin: 16px 0 0; }
 
   @media (min-width: 720px) {
     .flow { grid-template-columns: 1fr auto 1fr; gap: 0; }
-    .flow-arrow { flex-direction: row; padding: 0 18px; }
-    .flow-arrow .ln { width: 22px; height: 1px; }
+    .flow-arrow { padding: 0 20px; }
     .flow-arrow .gv { display: none; }
     .flow-arrow .gh { display: inline; }
   }
 
-  /* ---- anchors ---- */
-  .anchors { display: grid; gap: 2px; }
-  .anchor {
-    background: var(--card); border: 1px solid var(--line); padding: 22px 24px;
-  }
-  .anchor:not(:first-child) { border-top: none; }
+  /* anchors: clean hairline list */
+  .anchors { display: grid; gap: 0; }
+  .anchor { padding: 22px 0; border-top: 1px solid var(--line); }
+  .anchor:first-child { border-top: none; padding-top: 2px; }
   .anchor h3 {
-    font-family: var(--mono); font-weight: 500; font-size: 18px; letter-spacing: -.01em;
-    margin: 0 0 8px; color: var(--ink);
+    font-family: var(--mono); font-weight: 500; font-size: 16px; line-height: 1.45;
+    letter-spacing: -.01em; margin: 0 0 8px; color: var(--ink);
   }
   .anchor h3 b { color: var(--green); font-weight: 500; }
-  .anchor p { font-size: 15.5px; color: #4a4437; margin: 0; }
+  .anchor p { font-size: 15.5px; color: #4a4437; margin: 0; max-width: 62ch; }
 
-  /* ---- how it fits ---- */
-  .fit { background: #edefe8; border-left: 3px solid var(--green); padding: 18px 22px; }
-  .fit p { margin: 0; font-size: 16px; color: #3a352b; }
-  .fit code { font-family: var(--mono); font-size: 13.5px; background: #e2e6dc; padding: 1px 6px; color: #2c463f; }
-
-  /* ---- profiles ---- */
+  /* profiles */
   .profiles { display: grid; gap: 14px; }
   @media (min-width: 620px) { .profiles { grid-template-columns: 1fr 1fr; } }
   .profile {
@@ -206,39 +160,34 @@
   .profile:hover { border-color: var(--green); transform: translateY(-2px); }
   .profile .name { font-family: var(--mono); font-weight: 500; font-size: 17px; color: var(--ink); margin: 0 0 8px; }
   .profile .who { font-size: 14.5px; line-height: 1.55; color: #4a4437; margin: 0 0 16px; }
-  .profile .li {
-    font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--green);
-    display: inline-flex; align-items: center; gap: 6px;
-  }
+  .profile .li { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--green); }
   .profile:hover .li { color: var(--green-dark); }
 
-  /* ---- final cta ---- */
-  .cta {
-    margin-top: 76px; background: var(--card); border: 1px solid var(--line-strong);
-    padding: 40px 32px; text-align: center;
-  }
-  .cta h3 { font-family: var(--mono); font-weight: 500; font-size: 24px; margin: 0 0 10px; letter-spacing: -.01em; }
-  .cta p { color: var(--muted); font-size: 16px; margin: 0 0 24px; }
-  .cta .note { font-size: 14px; margin: 18px 0 0; }
+  /* final cta */
+  .cta { margin-top: 72px; background: var(--card); border: 1px solid var(--line-strong); padding: 40px 32px; text-align: center; }
+  .cta h3 { font-family: var(--mono); font-weight: 500; font-size: clamp(20px, 3.4vw, 24px); line-height: 1.3; margin: 0 0 24px; letter-spacing: -.01em; text-wrap: balance; }
+  .cta .note { font-size: 14px; color: var(--muted); margin: 18px 0 0; }
   .cta .note a { color: var(--muted); }
 
   footer {
-    max-width: 720px; margin: 56px auto 0; padding: 22px 24px 40px;
-    border-top: 1px solid var(--line);
+    max-width: 720px; margin: 56px auto 0; padding: 22px 24px 40px; border-top: 1px solid var(--line);
     font-family: var(--mono); font-size: 13px; color: var(--faint); text-align: center;
   }
   footer a { color: var(--faint); }
   footer .sep { margin: 0 8px; }
 
+  @media (max-width: 719px) {
+    /* panels stack; let trace lines wrap so the changed synthetic values stay on-screen */
+    .trace .row { white-space: pre-wrap; overflow-wrap: anywhere; }
+  }
   @media (max-width: 520px) {
-    .wrap { padding: 16px 20px 72px; }
+    .wrap { padding: 20px 20px 72px; }
     .bar { padding: 18px 20px; }
     .trace { font-size: 11.5px; }
     .cta { padding: 32px 22px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .m .mask { display: none; }
-    .s.active { box-shadow: none; }
+    .trace.gen .row { opacity: 1; transform: none; }
     .profile:hover { transform: none; }
   }
 </style>
@@ -252,34 +201,27 @@
 
 <div class="wrap">
 
-  <p class="eyebrow">Clean room for agent traces</p>
-
-  <h1>Teams building agents on sensitive data can't monitor or improve them.</h1>
+  <h1>Orizon is a clean room for agent traces.</h1>
 
   <p class="lead">
-    Legal, finance, and healthcare teams can't read their own production traces — the traces
-    contain customer data. So the traffic that would show what their agent gets wrong never
-    gets looked at.
-  </p>
-  <p class="lead">
-    <strong>Orizon is a clean room for those traces.</strong> Your production logs go in; a
-    synthetic, structurally-identical dataset comes out — safe to read, cluster, replay, and
-    eval, without exposing real data.
+    Teams building agents on sensitive data can't read their production traces, so they can't
+    build evals that reflect what really happens. Orizon turns that traffic into a synthetic
+    dataset you can safely read and replay, so you can <span class="em">build evals that mirror
+    your production environment</span>, without exposing customer data.
   </p>
 
   <div class="hero-cta">
     <a class="btn" href="https://cal.com/lohithsai-yadalachanchu-fsyzvu/20-min-chat">Book a demo</a>
-    <a class="btn ghost" href="#how">See how it fits</a>
   </div>
 
   <p class="backers">
-    <b>Supported by angels and scouts from OpenAI, Anthropic, Amazon, General Catalyst, a16z, and Lyceum.</b>
+    Supported by angels and scouts from OpenAI, Anthropic, Amazon, General Catalyst, a16z, and Lyceum.
   </p>
 
   <!-- ============ trace animation ============ -->
   <section aria-label="How a trace is transformed">
     <p class="flow-label">Real trace in · synthetic trace out</p>
-    <p class="flow-sub">Same structure, same failure, none of the real identities.</p>
+    <p class="flow-sub">Same structure, same failure mode, an entirely new synthetic trace.</p>
 
     <div class="flow">
       <div class="panel in">
@@ -287,70 +229,43 @@
         <pre class="trace" id="traceIn" aria-hidden="true"></pre>
       </div>
 
-      <div class="flow-arrow" aria-hidden="true">
-        <span class="ln"></span><span class="gv">↓</span><span class="gh">→</span><span class="ln"></span>
-      </div>
+      <div class="flow-arrow" aria-hidden="true"><span class="gv">↓</span><span class="gh">→</span></div>
 
       <div class="panel out">
         <div class="panel-head"><span class="dot"></span>Synthetic equivalent<span class="tag">safe to use</span></div>
-        <pre class="trace" id="traceOut" aria-hidden="true"></pre>
+        <pre class="trace gen" id="traceOut" aria-hidden="true"></pre>
       </div>
     </div>
-    <p class="flow-note">Processed in memory. Your raw logs are never stored.</p>
+    <p class="flow-note">Processed in memory with your own models. Never store logs and no extra data processors.</p>
   </section>
 
   <!-- ============ the problem ============ -->
   <section>
     <h2>The problem</h2>
-    <div class="prose">
-      <p>
-        Production traces are how teams build evals: you sample real traffic, find where the
-        agent fails, turn those cases into a golden set, and catch regressions before your
-        customers do.
-      </p>
-      <p>
-        But if your data is sensitive, no one is allowed to look. Teams end up
-        <span class="em">hiring people to hand-write fake traces</span> that stand in for real
-        users — slow, expensive, and nothing like what production actually throws at the agent.
-        Most just fly blind.
-      </p>
-    </div>
+    <p class="prose">
+      Production traces are how teams build evals. But when your data is sensitive, no one can read
+      them, so teams fly blind or <span class="em">pay people to hand-write fake traces</span> that
+      look nothing like production.
+    </p>
   </section>
 
-  <!-- ============ anchors ============ -->
+  <!-- ============ what orizon is ============ -->
   <section>
     <h2>What Orizon is</h2>
     <div class="anchors">
       <div class="anchor">
-        <h3><b>Orizon is</b> a clean room for production agent traffic.</h3>
-        <p>You evaluate your agent on real production behavior. No person — inside your company
-          or ours — ever reads a real user's data.</p>
+        <h3><b>Orizon is</b> your eval set at the scale of production.</h3>
+        <p>Built from all of your real traffic, not a hand-picked subset.</p>
       </div>
       <div class="anchor">
-        <h3><b>Orizon is</b> a golden eval set that builds itself from real traffic.</h3>
-        <p>Instead of paying a team to hand-write test cases, you get a synthetic set drawn from
-          what your users actually do, and the failures they actually hit.</p>
+        <h3><b>Orizon is</b> safe by construction.</h3>
+        <p>No one ever reads a real user's trace. What you evaluate on is synthetic from the start.</p>
       </div>
       <div class="anchor">
-        <h3><b>Orizon is</b> production observability for teams who can't read production.</h3>
-        <p>Cluster real behavior, find the failure modes, and watch for regressions on the
-          traffic you were never able to look at.</p>
+        <h3><b>Orizon is</b> a component in your own stack.</h3>
+        <p>It runs in front of your agent and writes synthetic traces to Braintrust, Langfuse,
+          LangSmith, or Raindrop.</p>
       </div>
-      <div class="anchor">
-        <h3><b>Orizon is</b> a drop-in for the eval stack you already run.</h3>
-        <p>Replay your agent on the synthetic traces, or export the set straight into Braintrust,
-          Langfuse, or LangSmith.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ how it fits ============ -->
-  <section id="how">
-    <h2>How it fits</h2>
-    <div class="fit">
-      <p>Orizon runs as a proxy or a passive SDK in front of your agent — nothing about how you
-        build changes. Traces are handled in memory and never stored in the clear. What you keep
-        is the synthetic dataset.</p>
     </div>
   </section>
 
@@ -377,8 +292,7 @@
 
   <!-- ============ final cta ============ -->
   <div class="cta">
-    <h3>See it on your own traffic.</h3>
-    <p>Twenty minutes. We'll show you a synthetic set built from a trace like yours.</p>
+    <h3>20 minutes, and we'll build you a production-like eval set.</h3>
     <a class="btn" href="https://cal.com/lohithsai-yadalachanchu-fsyzvu/20-min-chat">Book a demo</a>
     <p class="note">Prefer email? <a href="mailto:lohith@orizon.fun?subject=Orizon%20demo">lohith@orizon.fun</a></p>
   </div>
@@ -386,92 +300,63 @@
 </div>
 
 <footer>
-  Orizon
-  <span class="sep">·</span>
-  <a href="https://cal.com/lohithsai-yadalachanchu-fsyzvu/20-min-chat">book a demo</a>
-  <span class="sep">·</span>
-  <a href="mailto:lohith@orizon.fun?subject=Orizon%20demo">lohith@orizon.fun</a>
+  © 2026 Orizon
 </footer>
 
 <script>
 (function () {
-  // Two structurally-identical traces. Each token: [prefix, sensitiveValue, syntheticValue, suffix]
-  // is rendered inline; the sensitive side highlights and the synthetic side reveals in sequence.
-  var lines = [
-    { role: "user ", parts: [
-      ["Hi, this is ", "James Okoro", "Daniel Osei", " — my transfer to acct "],
-      ["", "4471-8820", "2093-5510", " is still pending."] ] },
-    { role: "tool ", parts: [
-      ["lookup_customer(email=\"", "james.okoro@northwind.co", "daniel.osei@brightbay.io", "\")"] ] },
-    { role: "     ", parts: [
-      ["→ tier: business, kyc: verified, phone: ", "+1 415 555 0132", "+1 206 555 0198", ""] ] },
-    { role: "tool ", parts: [
-      ["get_transfer(id=\"", "TRF-91X-4471", "TRF-63B-2093", "\")"] ] },
-    { role: "     ", parts: [
-      ["→ status: held, amount: ", "$12,480.00", "$9,750.00", ", to: \""],
-      ["", "Sunrise Medical LLC", "Harbor Dental Group", "\""] ] },
-    { role: "agent", parts: [
-      ["Hi ", "James", "Daniel", " — transfer "],
-      ["", "TRF-91X-4471", "TRF-63B-2093", " is held for review; funds release by 5pm ET."] ] }
+  // Left: a real trace. Right: a brand-new synthetic trace with the SAME structure
+  // (same roles, same tool calls, same failure), generated fresh, not the left with fields swapped.
+  var rows = [
+    ["user ", "Hey, I'm James Okoro. The transfer to 4471-8820 still hasn't gone through.",
+              "Hi, my payment to account 2093-5510 is showing as pending. Can you check?"],
+    ["tool ", "lookup_customer(email=\"james.okoro@northwind.co\")",
+              "lookup_customer(email=\"daniel.osei@brightbay.io\")"],
+    ["     ", "→ tier: business, kyc: verified, phone: +1 415 555 0132",
+              "→ tier: business, kyc: verified, phone: +1 206 555 0198"],
+    ["tool ", "get_transfer(id=\"TRF-91X-4471\")",
+              "get_transfer(id=\"TRF-63B-2093\")"],
+    ["     ", "→ status: held, amount: $12,480.00, to: \"Sunrise Medical LLC\"",
+              "→ status: held, amount: $9,750.00, to: \"Harbor Dental Group\""],
+    ["agent", "Hi James, TRF-91X-4471 is held for review; funds release by 5pm ET.",
+              "Thanks for waiting. TRF-63B-2093 is on hold for review and clears by 5pm ET."]
   ];
 
   var inEl = document.getElementById("traceIn");
   var outEl = document.getElementById("traceOut");
   if (!inEl || !outEl) return;
 
-  var sensTokens = [], maskTokens = [];
+  function mkRow(role, text) {
+    var row = document.createElement("div"); row.className = "row";
+    var rl = document.createElement("span"); rl.className = "role"; rl.textContent = role + "  ";
+    row.appendChild(rl); row.appendChild(document.createTextNode(text));
+    return row;
+  }
 
-  function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-  function blocks(t) { return "░".repeat(Math.max(1, t.length)); }
-
-  lines.forEach(function (ln) {
-    var rin = document.createElement("div"); rin.className = "row";
-    var rout = document.createElement("div"); rout.className = "row";
-    var rl = document.createElement("span"); rl.className = "role"; rl.textContent = ln.role + "  ";
-    var rl2 = rl.cloneNode(true);
-    rin.appendChild(rl); rout.appendChild(rl2);
-
-    ln.parts.forEach(function (p) {
-      var pre = p[0], sv = p[1], syn = p[2], suf = p[3];
-      if (pre) { rin.appendChild(document.createTextNode(pre)); rout.appendChild(document.createTextNode(pre)); }
-
-      var s = document.createElement("span"); s.className = "s"; s.textContent = sv;
-      rin.appendChild(s); sensTokens.push(s);
-
-      var m = document.createElement("span"); m.className = "m";
-      var v = document.createElement("span"); v.className = "v"; v.textContent = syn;
-      var mk = document.createElement("span"); mk.className = "mask"; mk.textContent = blocks(syn);
-      m.appendChild(v); m.appendChild(mk);
-      rout.appendChild(m); maskTokens.push(m);
-
-      if (suf) { rin.appendChild(document.createTextNode(suf)); rout.appendChild(document.createTextNode(suf)); }
-    });
-
-    inEl.appendChild(rin); outEl.appendChild(rout);
+  var outRows = [];
+  rows.forEach(function (r) {
+    inEl.appendChild(mkRow(r[0], r[1]));
+    var o = mkRow(r[0], r[2]);
+    outEl.appendChild(o); outRows.push(o);
   });
 
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduce) { maskTokens.forEach(function (m) { m.classList.add("shown"); }); return; }
+  if (reduce) { outEl.classList.remove("gen"); return; }
 
   var i = 0, timer;
   function step() {
-    if (i < maskTokens.length) {
-      if (i > 0) sensTokens[i - 1].classList.remove("active");
-      sensTokens[i].classList.add("active");
-      maskTokens[i].classList.add("shown");
-      i++;
-      timer = setTimeout(step, 620);
+    if (i < outRows.length) {
+      outRows[i].classList.add("on"); i++;
+      timer = setTimeout(step, 650);
     } else {
-      sensTokens.forEach(function (s) { s.classList.remove("active"); });
-      timer = setTimeout(reset, 3400);
+      timer = setTimeout(reset, 3600);
     }
   }
   function reset() {
-    maskTokens.forEach(function (m) { m.classList.remove("shown"); });
-    i = 0;
-    timer = setTimeout(step, 900);
+    outRows.forEach(function (o) { o.classList.remove("on"); });
+    i = 0; timer = setTimeout(step, 800);
   }
-  timer = setTimeout(step, 700);
+  timer = setTimeout(step, 600);
 })();
 </script>
 
