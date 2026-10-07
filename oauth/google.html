@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Connecting Google</title>
+  <style>
+    body { background: #faf9f5; color: #1f1e1d; font: 17px/1.5 -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 40px 16px; text-align: center; }
+  </style>
+</head>
+<body>
+  <p id="status">Connecting your Google account…</p>
+  <script>
+    // Google redirects here; `state` is "<nonce>.<tunnel host>", and only an Orizon assistant's quick tunnel may receive the code.
+    const query = new URLSearchParams(location.search);
+    const state = query.get("state") || "";
+    const host = state.slice(state.indexOf(".") + 1);
+    if (/^[a-z0-9-]+\.trycloudflare\.com$/.test(host)) {
+      location.replace(`https://${host}/oauth/google/callback${location.search}`);
+    } else {
+      document.getElementById("status").textContent = "This link didn't come from an Orizon assistant. Send /login google to get a new one.";
+    }
+  </script>
+</body>
+</html>
