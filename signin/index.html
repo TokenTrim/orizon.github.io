@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <!-- Test page: nothing typed here may leave the phone, so the browser itself blocks every request and form submission. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'none'">
+  <title>Assistant sign-in</title>
+  <style>
+    :root { --bg: #faf9f5; --fg: #1f1e1d; --muted: #6b6a66; --card: #fff; --line: #e3e1da; --accent: #c96442; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #1f1e1d; --fg: #f0eee6; --muted: #a3a19a; --card: #2a2927; --line: #3d3c39; } }
+    * { box-sizing: border-box; }
+    body { background: var(--bg); color: var(--fg); font: 17px/1.5 -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 40px 16px; }
+    main { max-width: 380px; margin: 0 auto; }
+    .badge { width: 56px; height: 56px; border-radius: 14px; background: var(--accent); color: #fff; font-size: 28px; font-weight: 600; display: grid; place-items: center; margin: 0 auto 16px; }
+    h1 { font-size: 24px; margin: 0; text-align: center; }
+    .sub { color: var(--muted); text-align: center; margin: 4px 0 28px; }
+    label { display: block; font-size: 14px; color: var(--muted); margin: 16px 0 6px; }
+    input { width: 100%; font: inherit; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--fg); }
+    button { width: 100%; font: inherit; font-weight: 600; padding: 13px; margin-top: 24px; border: 0; border-radius: 10px; background: var(--fg); color: var(--bg); }
+    .note { font-size: 14px; color: var(--muted); margin-top: 20px; text-align: center; }
+    #result { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-top: 24px; }
+    #result dt { font-size: 14px; color: var(--muted); }
+    #result dd { margin: 0 0 10px; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="badge" id="badge">?</div>
+    <h1 id="title">Sign in</h1>
+    <p class="sub">for your Orizon assistant</p>
+
+    <form id="form" method="post" action="#" autocomplete="on">
+      <label for="username">Email or username</label>
+      <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required>
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+      <label for="code">Verification code, if the site asks for one</label>
+      <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code">
+
+      <button type="submit">Sign in</button>
+    </form>
+
+    <dl id="result"></dl>
+    <p class="note">Test page: what you enter stays on this phone. Nothing is sent anywhere.</p>
+  </main>
+  <script>
+    // Opened as /signin/?site=linkedin.com, optionally with &name=LinkedIn; the assistant will send this link.
+    const NAMES = { "linkedin.com": "LinkedIn", "x.com": "X", "github.com": "GitHub", "instagram.com": "Instagram", "facebook.com": "Facebook" };
+    const query = new URLSearchParams(location.search);
+    const site = (query.get("site") || "").toLowerCase().replace(/^www\./, "");
+    const valid = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(site);
+    const fallback = site.split(".")[0].replace(/^./, c => c.toUpperCase());
+    const name = query.get("name") || NAMES[site] || fallback;
+
+    document.getElementById("badge").textContent = valid ? name[0] : "?";
+    document.getElementById("title").textContent = valid ? `Sign in to ${name}` : "No site in this link";
+    document.title = valid ? `${name} sign-in` : "Assistant sign-in";
+
+    function row(list, term, value) {
+      list.append(Object.assign(document.createElement("dt"), { textContent: term }));
+      list.append(Object.assign(document.createElement("dd"), { textContent: value }));
+    }
+
+    document.getElementById("form").addEventListener("submit", event => {
+      event.preventDefault();
+      const form = event.target;
+      const password = form.password.value;
+      const result = document.getElementById("result");
+      result.replaceChildren();
+      row(result, "Site", valid ? `${name} (${site})` : "none");
+      row(result, "Username", form.username.value);
+      row(result, "Password", `${"•".repeat(Math.min(password.length, 12))} ${password.length} characters`);
+      row(result, "Verification code", form.code.value || "none");
+      result.style.display = "block";
+      form.reset();
+    });
+  </script>
+</body>
+</html>
