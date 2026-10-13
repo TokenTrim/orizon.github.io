@@ -48,7 +48,8 @@
   .status { margin: 4px 0 0; font-size: 16px; color: var(--lead); min-height: 1.6em; }
   .status.bad { color: #a3341f; }
   a { color: var(--green); }
-  .consent { margin: 0; font-size: 14px; color: var(--muted); }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; color: var(--muted); cursor: pointer; }
+  .consent input { width: 16px; height: 16px; padding: 0; margin: 2px 0 0; flex: none; accent-color: var(--green); }
   footer { max-width: 640px; margin: 72px auto 0; padding-top: 22px; border-top: 1px solid var(--line-strong); font: 13px var(--mono); color: var(--muted); text-align: center; }
 </style>
 </head>
@@ -63,8 +64,8 @@
   <p class="lead">Enter your number and it will text you to get started.</p>
   <form class="field" id="signup">
     <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+44 7700 900123" aria-label="WhatsApp number with country code" autofocus>
+    <label class="consent"><input id="agree" type="checkbox" required> <span>I agree to the <a href="/privacy" target="_blank" rel="noopener">privacy policy</a> and to Orizon messaging me on WhatsApp.</span></label>
     <button id="go" class="btn" type="submit" disabled>Text me</button>
-    <p class="consent">By tapping Text me, you agree that Orizon can message you on WhatsApp. See our <a href="/privacy">privacy policy</a>.</p>
     <p id="status" class="status" role="status"></p>
   </form>
 </div>
@@ -88,11 +89,14 @@
   const form = document.getElementById("signup");
   const phone = document.getElementById("phone");
   const go = document.getElementById("go");
+  const agree = document.getElementById("agree");
   const status = document.getElementById("status");
   const digits = () => phone.value.replace(/\D/g, "");
-  phone.addEventListener("input", () => {
-    go.disabled = digits().length < 8 || digits().length > 15;
-  });
+  const ready = () => {
+    go.disabled = digits().length < 8 || digits().length > 15 || !agree.checked;
+  };
+  phone.addEventListener("input", ready);
+  agree.addEventListener("change", ready);
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     go.disabled = true;
