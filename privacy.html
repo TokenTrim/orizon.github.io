@@ -72,7 +72,7 @@
 
   <h2 id="how">How Orizon works</h2>
   <p>Orizon gives each person their own assistant on their own server. The server is yours, and it runs where you choose. It runs a web browser and the AI that drives it. You chat with the assistant on WhatsApp, iMessage or Telegram, and its answers are written by AI.</p>
-  <p>When you want Orizon to use one of your accounts, you sign in to it from your server. For most websites, Orizon sends you a sign-in page on go.orizon.fun. What you type there passes through Orizon's servers to yours, which enters it into the website's own sign-in form in the browser and does not keep it. Some services, such as Google, use their own sign-in screen instead, where you approve access. For your personal WhatsApp, Orizon links as a companion device, the way WhatsApp Web does.</p>
+  <p>When you want Orizon to use one of your accounts, you sign in to it from your server. For most websites, Orizon sends you a sign-in page on go.orizon.fun. What you type there passes through Orizon's servers to yours, which enters it into the website's own sign-in form in the browser and does not keep it. Some services use their own screen instead: Google asks you to approve access, and WhatsApp links when you scan a code, as WhatsApp Web does.</p>
   <p>From then on the assistant can see what you could see when signed in to that account, and it uses it to do what you ask.</p>
 
   <h2 id="messages">Your messages with Orizon</h2>
@@ -87,7 +87,7 @@
   <h2 id="accounts">Accounts you connect</h2>
   <p>You decide which accounts Orizon can use. It can use none of them until you sign in, and you can disconnect each one at any time. Depending on what you connect, the assistant can see:</p>
   <ul>
-    <li>messages and chats, including your personal WhatsApp and the status updates your contacts post;</li>
+    <li>messages and chats, including status updates your contacts post;</li>
     <li>email;</li>
     <li>calendar events and bookings;</li>
     <li>contacts and the profiles of people you know;</li>
@@ -95,7 +95,7 @@
     <li>activity and fitness records, including private activities, routes and heart rate;</li>
     <li>anything else that account shows you when you are signed in.</li>
   </ul>
-  <p>Orizon reads these accounts when a request needs them. It does not copy your accounts to your server, with one exception: your personal WhatsApp. WhatsApp delivers messages to a linked device instead of letting it look them up later, so Orizon keeps the last 7 days of your chats and your contact list while it is linked.</p>
+  <p>Orizon reads these accounts when a request needs them and does not make its own copy of them. Some chats only deliver new messages to a signed-in device and cannot be looked up later, so Orizon keeps recent messages for at most 7 days, and your contacts' names while that account is connected. Like any browser, the server's browser also keeps what websites store in it, such as your sign-ins.</p>
   <p>What the assistant reads while answering you becomes part of your conversation record. Orizon never stores the passwords or codes you type to sign in to a website.</p>
 
   <h3>Sensitive information</h3>
@@ -129,8 +129,9 @@
     <table>
       <thead><tr><th>What</th><th>How long</th></tr></thead>
       <tbody>
-        <tr><td>Your personal WhatsApp chats</td><td>The last 7 days. Older messages are deleted every hour. Everything, including your contact list, is deleted when you unlink.</td></tr>
+        <tr><td>Recent messages kept to stay up to date</td><td>At most 7 days. Older ones are deleted every hour. They and your contacts' names are deleted when you disconnect that account.</td></tr>
         <tr><td>Sign-ins to your accounts</td><td>Until you disconnect, or the service signs you out.</td></tr>
+        <tr><td>Other data websites store in the browser, as in any browser</td><td>Until you delete your account.</td></tr>
         <tr><td>Your conversations with Orizon, including what the assistant read</td><td>Until you delete your account.</td></tr>
         <tr><td>Reminders, suggested reminders and short links</td><td>Until you delete your account.</td></tr>
         <tr><td>Technical logs on your server, such as chat and contact names, never message text</td><td>Until your assistant's software is next updated.</td></tr>
